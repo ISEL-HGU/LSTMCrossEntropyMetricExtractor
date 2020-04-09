@@ -216,7 +216,7 @@ def main():
         else:
           print("Error! ", testcommit_name, " does not exist!!!!! ")
       writer.writerows(all)
-print("Finish")
+  print("Finish - ", args.test_file)
     
 if __name__ == '__main__':
   main()
