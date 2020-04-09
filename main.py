@@ -205,7 +205,7 @@ def main():
       for row in reader:
         testcommit_name = args.test_file + row[0] + ".txt"
         if os.path.exists(testcommit_name):
-          # print(testcommit_name)
+          print(testcommit_name)
           test_int_to_vocab, test_vocab_to_int, test_n_vocab, test_in_text, test_out_text = get_data_from_file(
               testcommit_name, 1, args.seq_size)
           # Test and get LSTM C.E. metric
@@ -216,7 +216,7 @@ def main():
         else:
           print("Error! ", testcommit_name, " does not exist!!!!! ")
       writer.writerows(all)
-print("Finish - ", args.test_file)
+print("Finish")
     
 if __name__ == '__main__':
   main()
