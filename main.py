@@ -131,6 +131,7 @@ def test(test_in_text, test_out_text, net, device, criterion):
   loss = criterion(logits.transpose(1, 2), y) # why we transpose the logits?
   loss_value = loss.item() # this loss is cross-entropy which is thing I want!!! 
   print("test set loss value (C.E.): ", loss_value)
+  return loss_value
 
 def main():
   # Training settings
@@ -155,6 +156,10 @@ def main():
                       help='lstm size')
   parser.add_argument('--gradients_norm', type=int, default=5,
                       help='norm to clip gradients')
+  parser.add_argument('--input_csv_metric_file', type=str, required=True, default=None,
+                      help='path of input metric csv file')
+  parser.add_argument('--output_csv_metric_file', type=str, required=True, default=None,
+                      help='path of output metric csv file')
   # parser.add_argument('--momentum', type=float, default=0.5, metavar='M',
   #                     help='SGD momentum (default: 0.5)')
   # parser.add_argument('--no-cuda', action='store_true', default=False,
@@ -172,21 +177,49 @@ def main():
 
   int_to_vocab, vocab_to_int, n_vocab, in_text, out_text = get_data_from_file(
       args.train_file, args.batch_size, args.seq_size)
-  test_int_to_vocab, test_vocab_to_int, test_n_vocab, test_in_text, test_out_text = get_data_from_file(
-      args.test_file, 1, args.seq_size)
+
   net = RNNModule(n_vocab, args.seq_size, args.embedding_size, args.lstm_size)
   net = net.to(device)
   criterion, optimizer = get_loss_and_train_op(net, args)
-
 
   # Training
   for e in range(1, args.epochs + 1):
     train(in_text, out_text, args, net, device, criterion, optimizer, e)
   
-  # Test
-  test(test_in_text, test_out_text, net, device, criterion)
+  # test_int_to_vocab, test_vocab_to_int, test_n_vocab, test_in_text, test_out_text = get_data_from_file(
+  #     args.test_file, 1, args.seq_size)
+  # # Test
+  # loss_value = test(test_in_text, test_out_text, net, device, criterion)
+  
+  # Save the metric to the output csv file
+  with open(args.input_csv_metric_file,'r') as csv_input:
+    with open(args.output_csv_metric_file, 'w') as csv_output:
+      writer = csv.writer(csv_output, lineterminator='\n')
+      reader = csv.reader(csv_input)
+      all = []
+      row = next(reader)
+      # print(row[0])
+      row.append('LSTM C.E.')
+      all.append(row)
+
+      for row in reader:
+        testcommit_name = args.test_file + row[0] + ".txt"
+        if os.path.exists(testcommit_name):
+          # print(testcommit_name)
+          test_int_to_vocab, test_vocab_to_int, test_n_vocab, test_in_text, test_out_text = get_data_from_file(
+              testcommit_name, 1, args.seq_size)
+          # Test and get LSTM C.E. metric
+          loss_value = test(test_in_text, test_out_text, net, device, criterion)
+          print(testcommit_name, loss_value)
+          row.append(loss_value)
+          all.append(row)
+        else:
+          print("Error! ", testcommit_name, " does not exist!!!!! ")
+      writer.writerows(all)
+print("Finish - ", args.test_file)
     
 if __name__ == '__main__':
   main()
+  
 
 
