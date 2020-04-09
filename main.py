@@ -152,7 +152,7 @@ def main():
   parser.add_argument('--embedding_size', type=int, default=64,
                       help='embedding size')
   parser.add_argument('--lstm_size', type=int, default=64,
-                      help='lstm size)
+                      help='lstm size')
   parser.add_argument('--gradients_norm', type=int, default=5,
                       help='norm to clip gradients')
   # parser.add_argument('--momentum', type=float, default=0.5, metavar='M',
