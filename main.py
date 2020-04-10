@@ -87,6 +87,7 @@ def get_loss_and_train_op(net, args):
   # gradient clipping doesn't apply here!
 
 def train(in_text, out_text, args, net, device, criterion, optimizer, e):
+  print("train~")
   batches = get_batches(in_text, out_text, args.batch_size, args.seq_size)
   state_h, state_c = net.zero_state(args.batch_size)
   # Transfer data to GPU
@@ -119,6 +120,7 @@ def train(in_text, out_text, args, net, device, criterion, optimizer, e):
   print('Epoch: {}/{}'.format(e, 200), 'Loss (C.E): {}'.format(loss_value)) # here, we just print the size of epoch 
 
 def test(test_in_text, test_out_text, net, device, criterion):
+  print("test~")
   net.eval() # Tell it we are in evaluation mode
   # 학습된 parameters을 이용하고 hidden and cell states는 초기화 시켜야함. 
   state_h, state_c = net.zero_state(1) #
@@ -219,6 +221,7 @@ def main():
   print("Finish - ", args.test_file)
     
 if __name__ == '__main__':
+  print(torch.rand(1, device="cuda"))
   main()
   
 
