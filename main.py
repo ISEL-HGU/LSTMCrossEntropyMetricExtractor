@@ -8,6 +8,8 @@ import os
 # from argparse import Namespace
 import argparse
 from itertools import chain
+import csv
+import os.path
 
 def tokenize_data(filename):
   with open(filename, "r") as file:
@@ -87,7 +89,7 @@ def get_loss_and_train_op(net, args):
   # gradient clipping doesn't apply here!
 
 def train(in_text, out_text, args, net, device, criterion, optimizer, e):
-  print("train~")
+  print("training...")
   batches = get_batches(in_text, out_text, args.batch_size, args.seq_size)
   state_h, state_c = net.zero_state(args.batch_size)
   # Transfer data to GPU
@@ -117,10 +119,11 @@ def train(in_text, out_text, args, net, device, criterion, optimizer, e):
     # Update the network's parameters
     optimizer.step() # the number of parameters update is batch-size * epoch
   # Print the loss value and have the model generate some text for us during training
-  print('Epoch: {}/{}'.format(e, 200), 'Loss (C.E): {}'.format(loss_value)) # here, we just print the size of epoch 
+  print("train_file: ", args.train_file)
+  print('Epoch: {}/{}'.format(e, args.epochs), 'Loss (C.E): {}'.format(loss_value)) # here, we just print the size of epoch 
 
 def test(test_in_text, test_out_text, net, device, criterion):
-  print("test~")
+  print("test...")
   net.eval() # Tell it we are in evaluation mode
   # 학습된 parameters을 이용하고 hidden and cell states는 초기화 시켜야함. 
   state_h, state_c = net.zero_state(1) #
