@@ -50,19 +50,21 @@ def get_data_from_file(file, batch_size, seq_size):
   int_text = [vocab_to_int[w] for w in text]
   if len(int_text) < (seq_size * batch_size):
     in_text = int_text
+    #
+    out_text = np.zeros_like(in_text)
+    out_text[:-1] = in_text[1:] # in_text의 두번째 부터 out_text의 처음으로 복사
+    out_text[-1] = in_text[0] # in_text의 처음을 out_text의 마지막으로 복사
+    # in_text = np.reshape(in_text, (batch_size, -1))
+    # out_text = np.reshape(out_text, (batch_size, -1))
   else:
     num_batches = int(len(int_text) / (seq_size * batch_size))
     in_text = int_text[:num_batches * batch_size * seq_size]
-  # print(in_text) 
-
-  # In next generation problem, 
-  # the target of each input word will be its consecutive wold,
-  # so we just shift the whole input data to the left by one step
-  out_text = np.zeros_like(in_text)
-  out_text[:-1] = in_text[1:] # in_text의 두번째 부터 out_text의 처음으로 복사
-  out_text[-1] = in_text[0] # in_text의 처음을 out_text의 마지막으로 복사
-  in_text = np.reshape(in_text, (batch_size, -1))
-  out_text = np.reshape(out_text, (batch_size, -1))
+    out_text = np.zeros_like(in_text)
+    out_text[:-1] = in_text[1:] # in_text의 두번째 부터 out_text의 처음으로 복사
+    out_text[-1] = in_text[0] # in_text의 처음을 out_text의 마지막으로 복사
+    in_text = np.reshape(in_text, (batch_size, -1))
+    out_text = np.reshape(out_text, (batch_size, -1))
+    
   # print(in_text[:10][:10]) # top and left of matrix
   # print(out_text[:10][:10]) # top and left of matrix
   return int_to_vocab, vocab_to_int, n_vocab, in_text, out_text
