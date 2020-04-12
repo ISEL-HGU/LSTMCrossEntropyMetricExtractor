@@ -70,12 +70,12 @@ def get_data_from_file(file, batch_size, seq_size):
   return int_to_vocab, vocab_to_int, n_vocab, in_text, out_text
   
 def get_batches(in_text, out_text, batch_size, seq_size):
-  num_batches = np.prod(in_text.shape) // (seq_size * batch_size)
-  if num_batches == 0:
+  if int(len(int_text) / (seq_size * batch_size)) == 0
     yield in_text[:,:], out_text[:,:]
-  else: 
-    for i in range(0, num_batches * seq_size, seq_size):
-      yield in_text[:, i:i+seq_size], out_text[:, i:i+seq_size]
+  else:
+  num_batches = np.prod(in_text.shape) // (seq_size * batch_size)
+  for i in range(0, num_batches * seq_size, seq_size):
+    yield in_text[:, i:i+seq_size], out_text[:, i:i+seq_size]
 
 class RNNModule(nn.Module):
   def __init__(self, n_vocab, seq_size, embedding_size, lstm_size):
