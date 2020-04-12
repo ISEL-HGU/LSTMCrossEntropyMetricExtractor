@@ -48,12 +48,13 @@ def get_data_from_file(file, batch_size, seq_size):
   # so we split the data into batches evenly. 
   # Chopping out the last uneven batch
   int_text = [vocab_to_int[w] for w in text]
-  if len(int_text) < batch_size:
+  num_batches = int(len(int_text) / (seq_size * batch_size))
+  if num_batches == 0:
     in_text = int_text
-    num_zero_padding = batch_size - len(in_text)
-    print("num of padding: ", num_zero_padding)
+    num_zero_padding = (seq_size * batch_size) - len(in_text)
+    print("size of zero padding: ", num_zero_padding)
     in_text = np.pad(in_text, (0, num_zero_padding), 'constant', constant_values=0)
-    print("add zero padding ", len(in_text))
+    print("after adding zero padding, the size: ", len(in_text))
     out_text = np.zeros_like(in_text)
     out_text[:-1] = in_text[1:] # in_text의 두번째 부터 out_text의 처음으로 복사
     out_text[-1] = in_text[0] # in_text의 처음을 out_text의 마지막으로 복사
