@@ -25,7 +25,8 @@ def tokenize_data(filename):
   list_split_dot = list(chain.from_iterable(list_split_dot))
   for token in list_split_dot:
     if token == '' :
-      print("tokenizing data... ignore empty string")
+      pass
+      # print("tokenizing data... ignore empty string")
     else :
       return_list.append(token)
   return return_list
