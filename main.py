@@ -16,13 +16,19 @@ def tokenize_data(filename):
     all_lines = file.readlines()
   list_split_WS = [] 
   list_split_dot = []
+  return_list = []
   for line in all_lines:
     list_split_WS.append(line.split())
   list_split_WS = list(chain.from_iterable(list_split_WS))
   for token in list_split_WS:
     list_split_dot.append(token.split('.'))
   list_split_dot = list(chain.from_iterable(list_split_dot))
-  return list_split_dot
+  for token in list_split_dot:
+    if token == '' :
+      print("tokenizing data... ignore empty string")
+    else :
+      return_list.append(token)
+  return return_list
 
 def get_data_from_file(file, batch_size, seq_size):
   text = tokenize_data(file)
@@ -47,7 +53,7 @@ def get_data_from_file(file, batch_size, seq_size):
     num_batches = int(len(int_text) / (seq_size * batch_size))
     in_text = int_text[:num_batches * batch_size * seq_size]
   # print(in_text) 
-  
+
   # In next generation problem, 
   # the target of each input word will be its consecutive wold,
   # so we just shift the whole input data to the left by one step
