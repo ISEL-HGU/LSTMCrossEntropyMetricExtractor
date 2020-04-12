@@ -70,7 +70,7 @@ def get_data_from_file(file, batch_size, seq_size):
   return int_to_vocab, vocab_to_int, n_vocab, in_text, out_text
   
 def get_batches(in_text, out_text, batch_size, seq_size):
-  if int(len(int_text) / (seq_size * batch_size)) == 0
+  if int(len(int_text) / (seq_size * batch_size)) == 0:
     yield in_text[:,:], out_text[:,:]
   else:
   num_batches = np.prod(in_text.shape) // (seq_size * batch_size)
