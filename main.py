@@ -64,7 +64,7 @@ def get_data_from_file(file, batch_size, seq_size):
     out_text[-1] = in_text[0] # in_text의 처음을 out_text의 마지막으로 복사
     in_text = np.reshape(in_text, (batch_size, -1))
     out_text = np.reshape(out_text, (batch_size, -1))
-    
+
   # print(in_text[:10][:10]) # top and left of matrix
   # print(out_text[:10][:10]) # top and left of matrix
   return int_to_vocab, vocab_to_int, n_vocab, in_text, out_text
@@ -138,7 +138,7 @@ def train(in_text, out_text, args, net, device, criterion, optimizer, e):
   print("train_file: ", args.train_file)
   print('Epoch: {}/{}'.format(e, args.epochs), 'Loss (C.E): {}'.format(loss_value)) # here, we just print the size of epoch 
 
-def test(test_in_text, test_out_text, net, device, criterion):
+def test(test_in_text, test_out_text, args, net, device, criterion):
   print("test...")
   net.eval() # Tell it we are in evaluation mode
   batches = get_batches(test_in_text, test_out_text, args.test_batch_size, args.seq_size)
@@ -243,7 +243,7 @@ def main():
           test_int_to_vocab, test_vocab_to_int, test_n_vocab, test_in_text, test_out_text = get_data_from_file(
               testcommit_name, args.test_batch_size, args.seq_size)
           # Test and get LSTM C.E. metric
-          loss_value = test(test_in_text, test_out_text, net, device, criterion)
+          loss_value = test(test_in_text, test_out_text, args, net, device, criterion)
           print(testcommit_name, loss_value)
           row.append(loss_value)
           all.append(row)
