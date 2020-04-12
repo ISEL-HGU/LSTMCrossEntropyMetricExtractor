@@ -47,7 +47,7 @@ def get_data_from_file(file, batch_size, seq_size):
   # so we split the data into batches evenly. 
   # Chopping out the last uneven batch
   int_text = [vocab_to_int[w] for w in text]
-  if len(int_text) <  (seq_size * batch_size):
+  if len(int_text) < (seq_size * batch_size):
     in_text = int_text
   else:
     num_batches = int(len(int_text) / (seq_size * batch_size))
@@ -68,7 +68,10 @@ def get_data_from_file(file, batch_size, seq_size):
   
 def get_batches(in_text, out_text, batch_size, seq_size):
   num_batches = np.prod(in_text.shape) // (seq_size * batch_size)
-  for i in range(0, num_batches * seq_size, seq_size):
+  if num_batches == 0:
+    yield in_text[:,:], out_text[:,:]
+  else: 
+    for i in range(0, num_batches * seq_size, seq_size):
       yield in_text[:, i:i+seq_size], out_text[:, i:i+seq_size]
 
 class RNNModule(nn.Module):
@@ -135,17 +138,25 @@ def train(in_text, out_text, args, net, device, criterion, optimizer, e):
 def test(test_in_text, test_out_text, net, device, criterion):
   print("test...")
   net.eval() # Tell it we are in evaluation mode
-  # 학습된 parameters을 이용하고 hidden and cell states는 초기화 시켜야함. 
-  state_h, state_c = net.zero_state(1) #
-  state_h = state_h.to(device) #
-  state_c = state_c.to(device) #
+  batches = get_batches(test_in_text, test_out_text, args.test_batch_size, args.seq_size)
+  state_h, state_c = net.zero_state(args.test_batch_size)
   # Transfer data to GPU
-  x = torch.tensor(test_in_text).to(device)
-  y = torch.tensor(test_out_text).to(device)
-  logits, (state_h, state_c) = net(x, (state_h, state_c))
-  loss = criterion(logits.transpose(1, 2), y) # why we transpose the logits?
-  loss_value = loss.item() # this loss is cross-entropy which is thing I want!!! 
-  print("test set loss value (C.E.): ", loss_value)
+  state_h = state_h.to(device)
+  state_c = state_c.to(device)
+  loss_average = []
+  for x, y in batches: # x is test_in_text and y is test_out_text
+    # Transfer data to GPU
+    x = torch.tensor(test_in_text).to(device)
+    y = torch.tensor(test_out_text).to(device)
+    logits, (state_h, state_c) = net(x, (state_h, state_c))
+    loss = criterion(logits.transpose(1, 2), y) # why we transpose the logits?
+    loss_value = loss.item()
+    loss_average.append(loss_value)
+    state_h = state_h.detach()
+    state_c = state_c.detach()
+   
+  # this loss is cross-entropy which is thing I want!!! 
+  print("test set loss value (C.E.): ", sum(loss_average) / len(loss_average))
   return loss_value
 
 def main():
@@ -153,8 +164,8 @@ def main():
   parser = argparse.ArgumentParser(description='LSTM Cross-Entropy Metric')
   parser.add_argument('--batch_size', type=int, default=16, metavar='N',
                       help='input batch size for training (default: 16)')
-  # parser.add_argument('--test-batch-size', type=int, default=1000, metavar='N',
-  #                     help='input batch size for testing (default: 1000)')
+  parser.add_argument('--test_batch_size', type=int, default=16, metavar='N',
+                      help='input batch size for testing (default: 16)')
   parser.add_argument('--epochs', type=int, default=100, metavar='N',
                       help='number of epochs to train (default: 100)')
   parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
@@ -227,7 +238,7 @@ def main():
         if os.path.exists(testcommit_name):
           print(testcommit_name)
           test_int_to_vocab, test_vocab_to_int, test_n_vocab, test_in_text, test_out_text = get_data_from_file(
-              testcommit_name, 1, args.seq_size)
+              testcommit_name, args.test_batch_size, args.seq_size)
           # Test and get LSTM C.E. metric
           loss_value = test(test_in_text, test_out_text, net, device, criterion)
           print(testcommit_name, loss_value)
