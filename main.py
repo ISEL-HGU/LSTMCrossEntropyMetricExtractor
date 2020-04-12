@@ -41,8 +41,12 @@ def get_data_from_file(file, batch_size, seq_size):
   # so we split the data into batches evenly. 
   # Chopping out the last uneven batch
   int_text = [vocab_to_int[w] for w in text]
-  num_batches = int(len(int_text) / (seq_size * batch_size))
-  in_text = int_text[:num_batches * batch_size * seq_size]
+  if len(int_text) <  (seq_size * batch_size):
+    in_text = int_text
+  else:
+    num_batches = int(len(int_text) / (seq_size * batch_size))
+    in_text = int_text[:num_batches * batch_size * seq_size]
+  # print(in_text) 
   
   # In next generation problem, 
   # the target of each input word will be its consecutive wold,
