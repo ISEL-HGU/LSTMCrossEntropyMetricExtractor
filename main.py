@@ -146,8 +146,8 @@ def test(test_in_text, test_out_text, net, device, criterion):
   loss_average = []
   for x, y in batches: # x is test_in_text and y is test_out_text
     # Transfer data to GPU
-    x = torch.tensor(test_in_text).to(device)
-    y = torch.tensor(test_out_text).to(device)
+    x = torch.tensor(x).to(device)
+    y = torch.tensor(y).to(device)
     logits, (state_h, state_c) = net(x, (state_h, state_c))
     loss = criterion(logits.transpose(1, 2), y) # why we transpose the logits?
     loss_value = loss.item()
