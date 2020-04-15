@@ -74,7 +74,7 @@ def get_data_from_file(file, batch_size, seq_size):
   return int_to_vocab, vocab_to_int, n_vocab, in_text, out_text
   
 def get_batches(in_text, out_text, batch_size, seq_size):
-  print(np.prod(in_text.shape))
+  # print(np.prod(in_text.shape))
   if int(np.prod(in_text.shape) / (seq_size * batch_size)) == 0:
     yield in_text[:,:], out_text[:,:]
   else:
@@ -247,7 +247,7 @@ def main():
           print(testcommit_name)
           test_int_to_vocab, test_vocab_to_int, test_n_vocab, test_in_text, test_out_text = get_data_from_file(
               testcommit_name, args.test_batch_size, args.seq_size)
-          if 
+          if test_n_vocab == 0: break
           # Test and get LSTM C.E. metric
           loss_value = test(test_in_text, test_out_text, args, net, device, criterion)
           print(testcommit_name, loss_value)
