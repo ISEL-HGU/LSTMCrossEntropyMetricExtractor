@@ -247,7 +247,7 @@ def main():
           print(testcommit_name)
           test_int_to_vocab, test_vocab_to_int, test_n_vocab, test_in_text, test_out_text = get_data_from_file(
               testcommit_name, args.test_batch_size, args.seq_size)
-          if test_n_vocab == 0: break
+          if test_n_vocab == 0: continue
           # Test and get LSTM C.E. metric
           loss_value = test(test_in_text, test_out_text, args, net, device, criterion)
           print(testcommit_name, loss_value)
