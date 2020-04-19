@@ -240,9 +240,13 @@ def main():
       # print(row[0])
       row.append('LSTM C.E.')
       all.append(row)
-
+      header_flag = 0
       for row in reader:
-        testcommit_name = args.test_file + row[0] + ".txt"
+        if header_flag == 0: 
+          header_flag = 1
+          continue # skip header row
+        commit_hash_key = row[20].split('-')[0]
+        testcommit_name = args.test_file + commit_hash_key + ".txt"
         if os.path.exists(testcommit_name):
           print(testcommit_name)
           test_int_to_vocab, test_vocab_to_int, test_n_vocab, test_in_text, test_out_text = get_data_from_file(
@@ -254,7 +258,7 @@ def main():
           row.append(loss_value)
           all.append(row)
         else:
-          print("Error! ", testcommit_name, " does not exist!!!!! ")
+          print("Warning - ", testcommit_name, " does not exist :( ")
       writer.writerows(all)
   print("Finish - ", args.test_file)
     
