@@ -106,7 +106,7 @@ class RNNModule(nn.Module):
     super(RNNModule, self).__init__()
     self.seq_size = seq_size
     self.lstm_size = lstm_size
-    self.embedding = nn.Embedding(n_vocab, embedding_size)
+    self.embedding = nn.Embedding(n_vocab, embedding_size, dtype=int)
     self.lstm = nn.LSTM(embedding_size, lstm_size, batch_first=True)
     self.dense = nn.Linear(lstm_size, n_vocab)
 
@@ -146,6 +146,7 @@ def train(in_text, out_text, args, net, device, criterion, optimizer, e):
     # Transfer data to GPU
     x = torch.tensor(x).to(device)
     y = torch.tensor(y).to(device)
+    x,y = x.type(torch.DoubleTensor), y.type(torch.DoubleTensor)
     logits, (state_h, state_c) = net(x, (state_h, state_c))
     loss = criterion(logits.transpose(1, 2), y) # why we transpose the logits?
     # Avoid autograd which is given by Pytorch to keep track of the tensor's flow to perform back-propagation.
