@@ -143,10 +143,10 @@ def train(in_text, out_text, args, net, device, criterion, optimizer, e):
     net.train()
     # Reset all gradients
     optimizer.zero_grad()
-    # Transfer data to GPU
+    # avoid RuntimeError: Expected tensor for argument #1 'indices' to have scalar type Long; but got torch.cuda.DoubleTensor instead (while checking arguments for embedding)
     x = x.astype(int)
     y = y.astype(int)
-    # x,y = x.type(torch.DoubleTensor), y.type(torch.DoubleTensor)
+    # Transfer data to GPU
     x = torch.tensor(x).to(device)
     y = torch.tensor(y).to(device)
     # x,y = x.type(torch.DoubleTensor), y.type(torch.DoubleTensor)
@@ -176,6 +176,9 @@ def test(test_in_text, test_out_text, args, net, device, criterion):
   state_c = state_c.to(device)
   loss_average = []
   for x, y in batches: # x is test_in_text and y is test_out_text
+    # avoid RuntimeError: Expected tensor for argument #1 'indices' to have scalar type Long; but got torch.cuda.DoubleTensor instead (while checking arguments for embedding)
+    x = x.astype(int)
+    y = y.astype(int)
     # Transfer data to GPU
     x = torch.tensor(x).to(device)
     y = torch.tensor(y).to(device)
