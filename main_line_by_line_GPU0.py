@@ -144,8 +144,8 @@ def train(in_text, out_text, args, net, device, criterion, optimizer, e):
     # Reset all gradients
     optimizer.zero_grad()
     # Transfer data to GPU
-    x.astype(int)
-    y.astype(int)
+    x = x.astype(int)
+    y = y.astype(int)
     # x,y = x.type(torch.DoubleTensor), y.type(torch.DoubleTensor)
     x = torch.tensor(x).to(device)
     y = torch.tensor(y).to(device)
