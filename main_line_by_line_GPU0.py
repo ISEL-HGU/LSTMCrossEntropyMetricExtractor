@@ -106,7 +106,7 @@ class RNNModule(nn.Module):
     super(RNNModule, self).__init__()
     self.seq_size = seq_size
     self.lstm_size = lstm_size
-    self.embedding = nn.Embedding(n_vocab, embedding_size, dtype=int)
+    self.embedding = nn.Embedding(n_vocab, embedding_size)
     self.lstm = nn.LSTM(embedding_size, lstm_size, batch_first=True)
     self.dense = nn.Linear(lstm_size, n_vocab)
 
