@@ -86,6 +86,10 @@ def get_data_from_file(file, batch_size, seq_size):
   out_text = np.reshape(list_out_text, (batch_size, -1))
   print("in_text shape: \n", in_text.shape) # top and left of matrix
   print("out_text shape: \n", out_text.shape) # top and left of matrix
+  print("in_text: \n", in_text) # top and left of matrix
+  print("out_texte: \n", out_text) # top and left of matrix
+  print("in_text[:10][:10]: \n", in_text[:10][:10]) # top and left of matrix
+  print("out_text[:10][:10]: \n", out_text[:10][:10]) # top and left of matrix
   return int_to_vocab, vocab_to_int, n_vocab, in_text, out_text
   
 def get_batches(in_text, out_text, batch_size, seq_size):
