@@ -10,6 +10,7 @@ import argparse
 from itertools import chain
 import csv
 import os.path
+import math 
 
 def tokenize_data(filename):
   with open(filename, "r") as file:
@@ -59,7 +60,7 @@ def get_data_from_file(file, batch_size, seq_size):
     int_text = [vocab_to_int[w] for w in text]
     in_text = int_text
     # print("len(in_text): ", len(in_text))
-    num_zero_padding = (seq_size * batch_size) - len(in_text) # 나중에 batch size로 나눠야 해서... 하지만 0이 너무 많이 들어가는데 비효율적이지 않나...
+    num_zero_padding = seq_size - len(in_text) 
     # print("size of zero padding: ", num_zero_padding)
     in_text = np.pad(in_text, (0, num_zero_padding), 'constant', constant_values=0)
     # print("after adding zero padding, the size: ", len(in_text))
@@ -71,15 +72,20 @@ def get_data_from_file(file, batch_size, seq_size):
 
   list_in_text = list(chain.from_iterable(list_in_text))
   list_out_text = list(chain.from_iterable(list_out_text))
+
+  add_zero_padding = (math.ceil(len(list_in_text) / batch_size) * batch_size) - len(list_in_text)
+  # print(add_zero_padding)
+
   # print(len(list_in_text))
   # print(len(list_out_text))
-  # print("list_in_text: \n", list_in_text) 
-  # print("list_out_text: \n", list_out_text) 
+
+  list_in_text = np.pad(list_in_text, (0, add_zero_padding), 'constant', constant_values=0)
+  list_out_text = np.pad(list_out_text, (0, add_zero_padding), 'constant', constant_values=0)
 
   in_text = np.reshape(list_in_text, (batch_size, -1))
   out_text = np.reshape(list_out_text, (batch_size, -1))
-  # print("in_text: \n", in_text) # top and left of matrix
-  # print("out_text: \n", out_text) # top and left of matrix
+  print("in_text shape: \n", in_text.shape) # top and left of matrix
+  print("out_text shape: \n", out_text.shape) # top and left of matrix
   return int_to_vocab, vocab_to_int, n_vocab, in_text, out_text
   
 def get_batches(in_text, out_text, batch_size, seq_size):
@@ -87,7 +93,7 @@ def get_batches(in_text, out_text, batch_size, seq_size):
   if int(np.prod(in_text.shape) / (seq_size * batch_size)) == 0:
     yield in_text[:,:], out_text[:,:]
   else:
-    num_batches = np.prod(in_text.shape) // (seq_size * batch_size)
+    num_batches = np.prod(in_text.shape) // (seq_size * batch_size) # Floor Division(//)
     for i in range(0, num_batches * seq_size, seq_size):
       yield in_text[:, i:i+seq_size], out_text[:, i:i+seq_size]
 
