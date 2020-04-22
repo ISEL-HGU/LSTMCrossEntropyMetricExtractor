@@ -144,9 +144,12 @@ def train(in_text, out_text, args, net, device, criterion, optimizer, e):
     # Reset all gradients
     optimizer.zero_grad()
     # Transfer data to GPU
+    x.double() 
+    y.double()
+    # x,y = x.type(torch.DoubleTensor), y.type(torch.DoubleTensor)
     x = torch.tensor(x).to(device)
     y = torch.tensor(y).to(device)
-    x,y = x.type(torch.DoubleTensor), y.type(torch.DoubleTensor)
+    # x,y = x.type(torch.DoubleTensor), y.type(torch.DoubleTensor)
     logits, (state_h, state_c) = net(x, (state_h, state_c))
     loss = criterion(logits.transpose(1, 2), y) # why we transpose the logits?
     # Avoid autograd which is given by Pytorch to keep track of the tensor's flow to perform back-propagation.
