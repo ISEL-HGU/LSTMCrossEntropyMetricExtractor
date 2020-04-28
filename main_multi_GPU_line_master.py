@@ -131,7 +131,7 @@ def get_loss_and_train_op(net, args):
 def train(in_text, out_text, args, net, device, criterion, optimizer, e):
   print("training...")
   batches = get_batches(in_text, out_text, args.batch_size, args.seq_size)
-  state_h, state_c = net.zero_state(args.batch_size)
+  state_h, state_c = net.module.zero_state(args.batch_size)
   # Transfer data to GPU
   state_h = state_h.to(device)
   state_c = state_c.to(device)
@@ -140,7 +140,7 @@ def train(in_text, out_text, args, net, device, criterion, optimizer, e):
   for x, y in batches: # x is in_text and y is out_text
     iteration += 1
     # Tell it we are in training mode
-    net.train()
+    net.module.train()
     # Reset all gradients
     optimizer.zero_grad()
     # avoid RuntimeError: Expected tensor for argument #1 'indices' to have scalar type Long; but got torch.cuda.DoubleTensor instead (while checking arguments for embedding)
@@ -170,7 +170,7 @@ def test(test_in_text, test_out_text, args, net, device, criterion):
   print("test...")
   net.eval() # Tell it we are in evaluation mode
   batches = get_batches(test_in_text, test_out_text, args.test_batch_size, args.seq_size)
-  state_h, state_c = net.zero_state(args.test_batch_size)
+  state_h, state_c = net.module.zero_state(args.test_batch_size)
   # Transfer data to GPU
   state_h = state_h.to(device)
   state_c = state_c.to(device)
@@ -245,8 +245,10 @@ def main():
   #print(torch.cuda.get_device_name(device))
   net = RNNModule(n_vocab, args.seq_size, args.embedding_size, args.lstm_size)
   print ('Available devices ', torch.cuda.device_count())
+  os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+  os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3" 
   if torch.cuda.device_count() > 1:
-    net = nn.DataParallel(net, dim=1).cuda()
+    net = nn.DataParallel(net)
   # net = net.module # add
   net = net.to(device)
   criterion, optimizer = get_loss_and_train_op(net, args)
