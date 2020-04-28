@@ -131,7 +131,7 @@ def get_loss_and_train_op(net, args):
 def train(in_text, out_text, args, net, device, criterion, optimizer, e):
   print("training...")
   batches = get_batches(in_text, out_text, args.batch_size, args.seq_size)
-  state_h, state_c = net.module.zero_state(128)
+  state_h, state_c = net.module.zero_state(128) # hard coding batch_size의 4배... hidden state에서 자꾸 에러나서...
   # Transfer data to GPU
   state_h = state_h.to(device)
   state_c = state_c.to(device)
@@ -170,7 +170,7 @@ def test(test_in_text, test_out_text, args, net, device, criterion):
   print("test...")
   net.eval() # Tell it we are in evaluation mode
   batches = get_batches(test_in_text, test_out_text, args.test_batch_size, args.seq_size)
-  state_h, state_c = net.module.zero_state(128)
+  state_h, state_c = net.module.zero_state(128) # hard coding batch_size의 4배... hidden state에서 자꾸 에러나서...
   # Transfer data to GPU
   state_h = state_h.to(device)
   state_c = state_c.to(device)
