@@ -230,22 +230,25 @@ def main():
   #                     help='how many batches to wait before logging training status')
   
   args = parser.parse_args()
+  int_to_vocab, vocab_to_int, n_vocab, in_text, out_text = get_data_from_file(
+    args.train_file, args.batch_size, args.seq_size)
   # use_cuda = not args.no_cuda and torch.cuda.is_available()
   # torch.manual_seed(args.seed)
-  GPU_NUM = 0 # 원하는 GPU 번호 입력
-  device = torch.device(f'cuda:{GPU_NUM}' if torch.cuda.is_available() else 'cpu')
-  torch.cuda.set_device(device) # change allocation of current GPU
-  print ('Current cuda device ', torch.cuda.current_device()) # check
+  # GPU_NUM = 0 # 원하는 GPU 번호 입력
+  # device = torch.device(f'cuda:{GPU_NUM}' if torch.cuda.is_available() else 'cpu')
+  device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+  # torch.cuda.set_device(device) # change allocation of current GPU
+  # print ('Current cuda device ', torch.cuda.current_device()) # check
   #device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
   #print ('Available devices ', torch.cuda.device_count())
   #print ('Current cuda device ', torch.cuda.current_device())
   #print(torch.cuda.get_device_name(device))
-  int_to_vocab, vocab_to_int, n_vocab, in_text, out_text = get_data_from_file(
-      args.train_file, args.batch_size, args.seq_size)
-
   net = RNNModule(n_vocab, args.seq_size, args.embedding_size, args.lstm_size)
+  if torch.cuda.device_count() > 1:
+    net = nn.DataParallel(net)
   net = net.to(device)
   criterion, optimizer = get_loss_and_train_op(net, args)
+
 
   # Training
   for e in range(1, args.epochs + 1):
