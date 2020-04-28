@@ -240,15 +240,16 @@ def main():
   # torch.cuda.set_device(device) # change allocation of current GPU
   # print ('Current cuda device ', torch.cuda.current_device()) # check
   #device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-  #print ('Available devices ', torch.cuda.device_count())
+  
   #print ('Current cuda device ', torch.cuda.current_device())
   #print(torch.cuda.get_device_name(device))
   net = RNNModule(n_vocab, args.seq_size, args.embedding_size, args.lstm_size)
+  criterion, optimizer = get_loss_and_train_op(net, args)
+  print ('Available devices ', torch.cuda.device_count())
   if torch.cuda.device_count() > 1:
     net = nn.DataParallel(net)
   net = net.to(device)
-  criterion, optimizer = get_loss_and_train_op(net, args)
-
+  
 
   # Training
   for e in range(1, args.epochs + 1):
