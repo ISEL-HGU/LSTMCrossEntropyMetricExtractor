@@ -140,7 +140,7 @@ def train(in_text, out_text, args, net, device, criterion, optimizer, e):
   for x, y in batches: # x is in_text and y is out_text
     iteration += 1
     # Tell it we are in training mode
-    net.module.train()
+    net.train()
     # Reset all gradients
     optimizer.zero_grad()
     # avoid RuntimeError: Expected tensor for argument #1 'indices' to have scalar type Long; but got torch.cuda.DoubleTensor instead (while checking arguments for embedding)
@@ -248,7 +248,7 @@ def main():
   os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
   os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3" 
   if torch.cuda.device_count() > 1:
-    net = nn.DataParallel(net)
+    net = nn.DataParallel(net,dim=1).cuda()
   # net = net.module # add
   net = net.to(device)
   criterion, optimizer = get_loss_and_train_op(net, args)
