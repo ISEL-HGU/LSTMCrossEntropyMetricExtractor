@@ -246,7 +246,7 @@ def main():
   net = RNNModule(n_vocab, args.seq_size, args.embedding_size, args.lstm_size)
   print ('Available devices ', torch.cuda.device_count())
   os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-  os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3" 
+  os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"  # for 19 server
   if torch.cuda.device_count() > 1:
     net = nn.DataParallel(net,dim=1)
   # net = net.module # add
