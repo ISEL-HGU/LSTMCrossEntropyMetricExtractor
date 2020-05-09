@@ -227,7 +227,8 @@ def main():
   # loss_value = test(test_in_text, test_out_text, net, device, criterion)
   # project_list = ["ace", "ant-ivy", "bigtop", "bval", "camel", "cayenne", "cordova-android", "creadur-rat", "crunch", "deltaspike", "gora", "groovy", "guacamole-client", "incubator-dolphinscheduler", "incubator-hivemall"]
   # project_list = ["cayenne", "cordova-android", "creadur-rat", "crunch", "deltaspike", "gora", "groovy", "guacamole-client", "incubator-dolphinscheduler", "incubator-hivemall", "camel"] # gora에서 메모리 터짐...
-  project_list = ["groovy", "guacamole-client", "incubator-dolphinscheduler", "incubator-hivemall", "camel", "gora"] 
+  # project_list = ["groovy", "guacamole-client", "incubator-dolphinscheduler", "incubator-hivemall", "camel", "gora"] 
+  project_list = ["ant-ivy", "bigtop", "bval", "camel", "cayenne", "creadur-rat", "deltaspike", "gora", "guacamole-client", "incubator-hivemall"]
   for project_name in project_list:
     # Save the metric to the output csv file
     with open("/home/eunjiwon/Git/Collect-Data-with-BugPatchCollector/Output/DP/label_DP/" + project_name + "_developer.csv",'r') as csv_input:

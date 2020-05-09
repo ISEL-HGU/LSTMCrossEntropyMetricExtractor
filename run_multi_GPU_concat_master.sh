@@ -1,6 +1,6 @@
 #!/bin/sh
 # Master LSTM
-python main_multi_GPU_concat_master.py --batch_size 32 --test_batch_size 32 --epochs 20 --lr 0.01 --seq_size 32 --embedding_size 64 --lstm_size 64 --gradients_norm 5 --train_file /home/eunjiwon/Git/Collect-Data-with-BugPatchCollector/TrainData/Master_AllCommitsAddedLines.txt
+python main_multi_GPU_concat_master.py --batch_size 32 --test_batch_size 32 --epochs 3 --lr 0.01 --seq_size 32 --embedding_size 64 --lstm_size 64 --gradients_norm 5 --train_file /home/eunjiwon/Git/Collect-Data-with-BugPatchCollector/TrainData/Master_AllCommitsAddedLines.txt
 
 
 
