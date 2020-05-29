@@ -264,7 +264,7 @@ def main():
   # loss_value = test(test_in_text, test_out_text, net, device, criterion)
   # project_list = ["ace", "ant-ivy", "bigtop", "bval", "camel", "cayenne", "cordova-android", "creadur-rat", "crunch", "deltaspike", "gora", "groovy", "guacamole-client", "incubator-dolphinscheduler", "incubator-hivemall"]
   # project_list = ["ace", "ant-ivy", "bigtop", "bval", "cayenne", "cordova-android", "creadur-rat", "crunch", "deltaspike", "gora", "groovy", "guacamole-client", "incubator-dolphinscheduler", "incubator-hivemall", "camel"]
-  project_list = ["ant-ivy", "bigtop", "bval", "camel", "cayenne", "creadur-rat", "deltaspike", "gora", "guacamole-client", "incubator-hivemall"]
+  project_list = ["ant-ivy", "bval", "camel", "cayenne", "deltaspike", "gora", "guacamole-client", "incubator-hivemall"]
   for project_name in project_list:
     # Save the metric to the output csv file
     with open("/home/eunjiwon/Git/Collect-Data-with-BugPatchCollector/Output/DP/label_DP/" + project_name + "_developer.csv",'r') as csv_input:
@@ -281,7 +281,8 @@ def main():
           if header_flag == 0: 
             header_flag = 1
             continue # skip header row
-          commit_hash_key = row[20].split('-')[0]
+          # commit_hash_key = row[20].split('-')[0]
+          commit_hash_key = row[20]
           testcommit_name = "/home/eunjiwon/Git/Collect-Data-with-BugPatchCollector/TrainData/Commit/" + project_name + "/" + commit_hash_key + ".txt"
           if os.path.exists(testcommit_name):
             print(testcommit_name)

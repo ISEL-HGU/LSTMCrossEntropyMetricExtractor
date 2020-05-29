@@ -229,7 +229,7 @@ def main():
   #     args.test_file, 1, args.seq_size)
   # # Test
   # loss_value = test(test_in_text, test_out_text, net, device, criterion)
-  project_list = ["ant-ivy", "bigtop", "bval", "camel", "cayenne", "creadur-rat", "deltaspike", "gora", "guacamole-client", "incubator-hivemall"]
+  project_list = ["ant-ivy", "bval", "camel", "cayenne", "deltaspike", "gora", "guacamole-client", "incubator-hivemall"]
   # project_list = ["cayenne", "cordova-android", "creadur-rat", "crunch", "deltaspike", "gora", "groovy", "guacamole-client", "incubator-dolphinscheduler", "incubator-hivemall", "camel"] # gora에서 메모리 터짐...
   # project_list = ["gora", "groovy", "guacamole-client", "incubator-dolphinscheduler", "incubator-hivemall", "camel"] # multi-GPU가 아직 검증되지 않았으니까 일단 1개로...
   for project_name in project_list:
